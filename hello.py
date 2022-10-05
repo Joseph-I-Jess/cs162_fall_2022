@@ -1,4 +1,4 @@
-#stuff
+#Demonstrate some basic Python code for CS162.
 
 debug_level = 0
 
