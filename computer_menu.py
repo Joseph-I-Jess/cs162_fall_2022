@@ -17,10 +17,12 @@ def main():
                 "1: input computer computer specifications\n" \
                 "2: display current computer specifications\n" \
                 "3: toggle power on current computer\n" \
+                "4: write current computer to file\n" \
+                "5: read from file into current computer\n" \
                 "What would you like to do?\n"
                 )
 
-            if user_input not in ["0", "1", "2", "3"]:
+            if user_input not in ["0", "1", "2", "3", "4", "5"]:
                 print(f"That is not a valid input")
             else:
                 bad_input = False
@@ -50,6 +52,29 @@ def main():
                     print("Your computer is now off.")
             else:
                 print("You have not created a computer yet.")
+        elif user_input == "4":
+            #write to file
+            try:
+                with open("computer.txt", "w") as output_file:
+                    output_file.write(f"{my_computer}")
+            except:
+                print("Something went wrong...")
+                quit(-1)
+        elif user_input == "5":
+            #read from
+            try:
+                file_name = "computer.txt"
+                with open(file_name, "r") as input_file:
+                    input_lines = input_file.readlines()
+                    # should we store the modified lines back into a list? Then call the new computer object?
+                    for line in input_lines:
+                        split_line = line.split(": ")[1].strip()
+                        print(f"split_line: {split_line}")
+                    
+                    
+                
+            except FileNotFoundError as fnfe:
+                print(f"File not found: {file_name}")
         elif user_input == "0":
             #if 0 quit
             pass

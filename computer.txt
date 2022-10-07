@@ -1,0 +1,8 @@
+self.name: jotop:
+	self.cpu_name: i7
+	self.cpu_freq_value: 3.9
+	self.cpu_freq_unit: GHz
+	self.motherboard: Gigabyte G276
+	self.motherboard_ram_slots: 4
+	self.motherboard_ram_max_size: 17179869184
+	self.powered_on: True
