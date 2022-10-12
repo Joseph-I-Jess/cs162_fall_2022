@@ -1,6 +1,6 @@
 '''Program to interact with Computer objects.'''
 
-import computer
+import computer_project
 
 debug_level = 0
 
@@ -35,7 +35,7 @@ def main():
             #if 1 request inputs from user for Computer object
             new_computer_name = input(f"What is your computer's name?\n")
             new_cpu_model = input(f"\nWhat is your CPU model?\n")
-            my_computer = computer.Computer(new_computer_name, new_cpu_model)
+            my_computer = computer_project.Computer(new_computer_name, new_cpu_model)
         elif user_input == "2":
             #if 2 display current Computer object if it exists
             if my_computer == None:

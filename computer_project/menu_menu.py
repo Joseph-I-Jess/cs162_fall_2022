@@ -2,9 +2,9 @@
 
 In the end, no it does not, only one import runs.'''
 
-import computer
+import computer_project
 import computer_menu
 
 print(f"__name__ in my menu_menu file: {__name__}")
 
-print(f"computer.PI: {computer.PI}")
+print(f"computer.PI: {computer_project.PI}")
