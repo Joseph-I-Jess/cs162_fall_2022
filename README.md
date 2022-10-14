@@ -2,3 +2,5 @@
 Repo for showing GitHub to CS162 class
 
 Let's try to create a local repository and push that code up to this repository!
+
+To run the project as intended, please execute main.py.
