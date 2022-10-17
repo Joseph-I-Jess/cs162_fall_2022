@@ -78,7 +78,9 @@ class Gui_basics:
         # setup data objects
         # this is called the Model of a program in the MVC architecture
         self.my_pc = computer.Computer()
-        print(f"self.my_pc: {self.my_pc}")
+        
+        # debug
+        # print(f"self.my_pc: {self.my_pc}")
 
 
         # connect data objects with GUI components
