@@ -1,6 +1,7 @@
 """Class to describe a computer object."""
 
-print(f"__name__ in my computer file: {__name__}")
+# debug
+# print(f"__name__ in my computer file: {__name__}")
 
 PI = 3.14159265358979323
 

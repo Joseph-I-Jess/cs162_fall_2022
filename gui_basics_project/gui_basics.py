@@ -69,9 +69,11 @@ class Gui_basics:
         my_rectangle1_id = self.canvas_output.create_rectangle(10, 10, 20, 20, fill="red")
         my_rectangle2_id = self.canvas_output.create_rectangle(30, 10, 40, 20, fill="green")
         my_rectangle3_id = self.canvas_output.create_rectangle(10, 30, 20, 40, fill="blue")
-        print(f"my_rectangle1_id: {my_rectangle1_id}")
-        print(f"my_rectangle2_id: {my_rectangle2_id}")
-        print(f"my_rectangle3_id: {my_rectangle3_id}")
+        
+        # debug
+        # print(f"my_rectangle1_id: {my_rectangle1_id}")
+        # print(f"my_rectangle2_id: {my_rectangle2_id}")
+        # print(f"my_rectangle3_id: {my_rectangle3_id}")
 
         # setup data objects
         # this is called the Model of a program in the MVC architecture
