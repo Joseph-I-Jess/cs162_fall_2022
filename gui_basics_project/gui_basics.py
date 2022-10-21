@@ -19,8 +19,11 @@ class Gui_basics:
         
         self.computer_label_string_var.set(new_text)
 
-    def move_canavs_object(self, move_x, move_y):
-        object_index = self.input_text.get('1.0', 'end').strip()
+    def move_canavs_object(self, move_x, move_y, proposed_index=None):
+        if proposed_index is None:
+            object_index = self.input_text.get('1.0', 'end').strip()
+        else:
+            object_index = proposed_index
 
         if object_index.isnumeric():
             object_index = int(object_index)
@@ -34,6 +37,17 @@ class Gui_basics:
                 self.canvas_output.move(index, move_x, move_y)
         else:
             print(f"object index is invalid ({object_index})")
+
+    def move_canavs_object_right_repeatedly(self, move_x, move_y, proposed_index=None):
+        if proposed_index is None:
+            object_index = self.input_text.get('1.0', 'end').strip()
+        else:
+            object_index = proposed_index
+        
+        self.move_canavs_object(move_x, move_y, object_index)
+
+        # Note: if we click the button multiple times, then we have multiple "threads" running this code.
+        self.root.after(1000, lambda: self.move_canavs_object_right_repeatedly(move_x, move_y, object_index))
 
 
     def create_new_window(self):
@@ -87,7 +101,7 @@ class Gui_basics:
 
         self.computer_label_string_var = tk.StringVar(self.root, "hello?")
         zero_img = tk.PhotoImage() # zero sized image to set scale of label to pixels instead of character width and height...
-        self.computer_label = tk.Label(self.root, textvariable=self.computer_label_string_var, image=zero_img, compound=tk.CENTER, width=1000, height=200)
+        self.computer_label = tk.Label(self.root, textvariable=self.computer_label_string_var, image=zero_img, compound=tk.CENTER, width=100, height=20)
         self.computer_label.grid(column=0, row=0)
 
         self.label_a1 = tk.Label(self.root, text="A1")
@@ -105,21 +119,41 @@ class Gui_basics:
         self.update_label_button = tk.Button(self.root, text="update label", command=self.update_label_text)
         self.update_label_button.grid(column=1, row=2)
 
-        # this code is easy to break, because we are not validating input yet...!
-        self.move_canavs_object_right_button = tk.Button(self.root, text="Right", command=lambda: self.move_canavs_object(10, 0))
+        self.move_canavs_object_right_button = tk.Button(
+            self.root,
+            text="Right",
+            command=lambda: self.move_canavs_object(10, 0))
         self.move_canavs_object_right_button.grid(column=5, row=2)
 
-        # this code is easy to break, because we are not validating input yet...!
-        self.move_canavs_object_left_button = tk.Button(self.root, text="Left", command=lambda: self.move_canavs_object(-10, 0))
+        self.move_canavs_object_left_button = tk.Button(
+            self.root,
+            text="Left",
+            command=lambda: self.move_canavs_object(-10, 0))
         self.move_canavs_object_left_button.grid(column=3, row=2)
 
-        # this code is easy to break, because we are not validating input yet...!
-        self.move_canavs_object_up_button = tk.Button(self.root, text="Up", command=lambda: self.move_canavs_object(0, -10))
+        self.move_canavs_object_up_button = tk.Button(
+            self.root,
+            text="Up",
+            command=lambda: self.move_canavs_object(0, -10))
         self.move_canavs_object_up_button.grid(column=4, row=1)
 
-        # this code is easy to break, because we are not validating input yet...!
-        self.move_canavs_object_down_button = tk.Button(self.root, text="Down", command=lambda: self.move_canavs_object(0, 10))
+        self.move_canavs_object_down_button = tk.Button(
+            self.root,
+            text="Down",
+            command=lambda: self.move_canavs_object(0, 10))
         self.move_canavs_object_down_button.grid(column=4, row=2)
+
+        self.move_canavs_object_1_right_repeatedly_button = tk.Button(
+            self.root,
+            text="Move object 1 right repeatedly",
+            command=lambda: self.move_canavs_object_right_repeatedly(10, 0, "1"))
+        self.move_canavs_object_1_right_repeatedly_button.grid(column=4, row=3)
+
+        self.move_canavs_object_right_repeatedly_button = tk.Button(
+            self.root,
+            text="Move object selected by text box right repeatedly",
+            command=lambda: self.move_canavs_object_right_repeatedly(10, 0))
+        self.move_canavs_object_right_repeatedly_button.grid(column=4, row=4)
 
         self.input_text = tk.Text(self.root, width=10, height=1)
         self.input_text.grid(column=2, row=0)
