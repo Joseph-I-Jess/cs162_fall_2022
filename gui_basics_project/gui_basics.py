@@ -90,6 +90,13 @@ class Gui_basics:
         elif event.keysym == "Down":
             self.move_canavs_object(0, 10)
 
+    def print_diagnostics(self):
+        for key,value in self.__dict__.items():
+            print(f"k: {key}, v: {value}")
+            if hasattr(value, "__dict__"):
+                for k,v in value.__dict__.items():
+                    print(f"\tsk: {k}, sv: {v}")
+
 
     # setup GUI components
     # this is called the View of a program in the Model-View-Controller (MVC) architecture
@@ -155,6 +162,9 @@ class Gui_basics:
             command=lambda: self.move_canavs_object_right_repeatedly(10, 0))
         self.move_canavs_object_right_repeatedly_button.grid(column=4, row=4)
 
+        self.diagnostic_button = tk.Button(self.root, text="diagnotsics", command=self.print_diagnostics)
+        self.diagnostic_button.grid(column=0, row=4)
+
         self.input_text = tk.Text(self.root, width=10, height=1)
         self.input_text.grid(column=2, row=0)
         self.input_text.focus_set()
@@ -186,6 +196,7 @@ class Gui_basics:
         # setup data objects
         # this is called the Model of a program in the MVC architecture
         self.my_pc = computer.Computer()
+        self.my_pc.toggle_power()
         
         # debug
         # print(f"self.my_pc: {self.my_pc}")
