@@ -1,6 +1,9 @@
 '''Let's make a GUI that shows search.'''
 
+import random
 import tkinter as tk
+
+import gui_search_project.rectangle as rectangle
 
 """
     ToDo:
@@ -16,6 +19,29 @@ class Gui_search:
         
         self.label_string_var.set(new_text)
 
+    
+    def add_rectangle(self, x0, y0, x1, y1, fill_color):
+        '''Create a rectangle, add it to canvas and rectangles list.'''
+        new_rectangle = rectangle.Rectangle(0, x0, y0, x1, y1, fill_color)
+        new_id = self.canvas_output.create_rectangle(new_rectangle.x0, new_rectangle.y0, new_rectangle.x1, new_rectangle.y1, fill=new_rectangle.fill_color)
+        self.canvas_output.create_text(x0 + 10, y0 + 10, text=f"{y0 - y1}", fill="white")
+        new_rectangle.id = new_id
+        self.rectangles.append(new_rectangle)
+
+    def search(self, proposed_number=None):
+        # fetch value from entry box
+        if proposed_number is None:
+            # should do input validation!
+            proposed_number = int(self.input_text.get())
+
+        # look through rectangles for that value
+        for current_rectangle in self.rectangles:
+            if proposed_number == (current_rectangle.y0 - current_rectangle.y1):
+                # change fill_color of any matching rectangles to white
+                self.canvas_output.itemconfig(current_rectangle.id, fill="white")
+
+
+        
 
     # setup GUI components
     # this is called the View of a program in the Model-View-Controller (MVC) architecture
@@ -33,15 +59,29 @@ class Gui_search:
         self.input_text = tk.Entry(self.root, width=10)
         self.input_text.grid(column=2, row=0)
         self.input_text.focus_set()
-        self.input_text.bind('<Return>', lambda event: self.update_label_text(self.input_text.get()))
+        self.input_text.bind('<Return>', lambda event: self.search())
 
-        self.canvas_output = tk.Canvas(self.root, width=640, height=480, background="black")
+        self.canavs_output_height = 150
+        self.canavs_output_width = 640
+        self.canvas_output = tk.Canvas(self.root, width=self.canavs_output_width, height=self.canavs_output_height, background="black")
         self.canvas_output.grid(column=0, row=3, columnspan=3)
-        self.canvas_object_ids = []
+
+        self.rectangles = []
         list_of_colors = ["red", "green", "blue"]
-        for count in range(0,6):
-            new_shape = self.canvas_output.create_rectangle(10 * count, 10, 10 * count + 10, 20, fill=list_of_colors[count % len(list_of_colors)])
-            self.canvas_object_ids.append(new_shape)
+        width = 30
+        # height will be random in the end
+        x_offset = 20
+        x_buffer = 10
+        y_bottom_offset = 20
+        for count in range(0,10):
+            x0 = count * (width + x_buffer) + x_offset
+            y0 = self.canavs_output_height - y_bottom_offset
+            x1 = count * (width + x_buffer) + x_offset + width
+            # should probably have min, max, and step be variables...
+            y1 = self.canavs_output_height - y_bottom_offset - random.randrange(10, 110, 10)
+            fill_color = list_of_colors[count % len(list_of_colors)]
+            self.add_rectangle(x0, y0, x1, y1, fill_color)
+            
 
         # setup data objects
         # this is called the Model of a program in the MVC architecture
