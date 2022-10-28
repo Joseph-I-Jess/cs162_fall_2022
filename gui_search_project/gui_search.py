@@ -30,21 +30,34 @@ class Gui_search:
         self.rectangles.append(new_rectangle)
 
     def search(self, proposed_number=None):
+        # reset all rectangles to white
+        for rectangle in self.rectangles:
+            self.canvas_output.itemconfig(rectangle.id, fill="white")
+        self.root.after(0, self.root.update())
+        
         # fetch value from entry box
         if proposed_number is None:
             # should do input validation!
             proposed_number = int(self.input_text.get())
 
         # look through rectangles for that value
-        for current_rectangle in self.rectangles:
+        for position, current_rectangle in enumerate(self.rectangles):
+            # fetch delay from slider live as we run thr program...
+            delay = self.slider.get()
+            self.canvas_output.itemconfig(current_rectangle.id, fill="yellow")
+            self.root.after(delay, self.root.update())
             if proposed_number == (current_rectangle.y0 - current_rectangle.y1):
                 # change fill of current rectangle to yellow, pause, then change to white
-                self.canvas_output.itemconfig(current_rectangle.id, fill="yellow")
                 # We could use update and sleep... or we can cleverly plan ahead with the after method
-                self.root.update()
-                time.sleep(3)
+                # self.root.update()
+                # time.sleep(3)
                 # change fill_color of any matching rectangles to white
-                self.canvas_output.itemconfig(current_rectangle.id, fill="white")
+                self.canvas_output.itemconfig(current_rectangle.id, fill="green")
+                self.root.after(delay * 2, self.root.update())
+            else:
+                self.canvas_output.itemconfig(current_rectangle.id, fill="red")
+                self.root.after(delay * 2, self.root.update())
+                
         
 
     # setup GUI components
@@ -70,8 +83,11 @@ class Gui_search:
         self.canvas_output = tk.Canvas(self.root, width=self.canavs_output_width, height=self.canavs_output_height, background="black")
         self.canvas_output.grid(column=0, row=3, columnspan=3)
 
+        self.slider = tk.Scale(self.root, from_=10, to=2000, orient="horizontal")
+        self.slider.grid(column=1, row=0)
+
+        # data objects
         self.rectangles = []
-        list_of_colors = ["red", "green", "blue"]
         width = 30
         # height will be random in the end
         x_offset = 20
@@ -83,7 +99,7 @@ class Gui_search:
             x1 = count * (width + x_buffer) + x_offset + width
             # should probably have min, max, and step be variables...
             y1 = self.canavs_output_height - y_bottom_offset - random.randrange(10, 110, 10)
-            fill_color = list_of_colors[count % len(list_of_colors)]
+            fill_color = "blue"
             self.add_rectangle(x0, y0, x1, y1, fill_color)
             
 
