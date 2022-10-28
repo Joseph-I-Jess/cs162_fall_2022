@@ -1,6 +1,7 @@
 '''Let's make a GUI that shows search.'''
 
 import random
+import time
 import tkinter as tk
 
 import gui_search_project.rectangle as rectangle
@@ -37,10 +38,13 @@ class Gui_search:
         # look through rectangles for that value
         for current_rectangle in self.rectangles:
             if proposed_number == (current_rectangle.y0 - current_rectangle.y1):
+                # change fill of current rectangle to yellow, pause, then change to white
+                self.canvas_output.itemconfig(current_rectangle.id, fill="yellow")
+                # We could use update and sleep... or we can cleverly plan ahead with the after method
+                self.root.update()
+                time.sleep(3)
                 # change fill_color of any matching rectangles to white
                 self.canvas_output.itemconfig(current_rectangle.id, fill="white")
-
-
         
 
     # setup GUI components
