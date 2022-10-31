@@ -4,7 +4,7 @@ import random
 import time
 import tkinter as tk
 
-import gui_search_project.rectangle as rectangle
+import rectangle.rectangle as rectangle
 
 """
     ToDo:

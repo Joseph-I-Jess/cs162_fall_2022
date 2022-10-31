@@ -1,5 +1,5 @@
-import gui_search_project.gui_search
+import gui_sort_project.gui_sort
 
-my_gui = gui_search_project.gui_search.Gui_search()
+my_gui = gui_sort_project.gui_sort.Gui_sort()
 
 my_gui.mainloop()
