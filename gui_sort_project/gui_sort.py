@@ -36,7 +36,6 @@ class Gui_sort:
 
     def highlight_rectangle_for_a_time(self, proposed_rectangle):
         '''Highlight a rectangle for an amount of time, then un-highlight that rectangle.'''
-        print("highlight being called")
         # fetch delay from slider live as we run thr program...
         delay = self.slider.get()
         # fetch old oclor to change back later
@@ -62,6 +61,7 @@ class Gui_sort:
             for index in range(len(self.rectangles) - 1):
                 # debug to detect that we need length of list -1 because we are looking at a window of values that is two elements wide.
                 # print(f"index in sort: {index}")
+                self.highlight_rectangle_for_a_time(self.rectangles[index])
                 self.sort_step(index, index + 1)
 
 
