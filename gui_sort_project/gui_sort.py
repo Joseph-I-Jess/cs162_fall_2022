@@ -8,7 +8,8 @@ import rectangle.rectangle as rectangle
 
 """
     ToDo:
-        !!!Change sort_step code to use rctangles list (model) for logic instead of canvas object ids (view)!!!
+        !!!Change sort_step code to use rctangles list (model) for logic instead of canvas object ids (view)
+            OR let's swap height of rectangles and number in Canvas text objects!!!
         have errors in label on GUI blink before disappearing?
         xhow do we want to handle the text box accepting the return key as a newline character in its input? Should we clear the newline...?
             fixed by swapping to entry widget :)
@@ -26,9 +27,12 @@ class Gui_sort:
         '''Create a rectangle, add it to canvas and rectangles list.'''
         new_rectangle = rectangle.Rectangle(0, x0, y0, x1, y1, fill_color)
         new_id = self.canvas_output.create_rectangle(new_rectangle.x0, new_rectangle.y0, new_rectangle.x1, new_rectangle.y1, fill=new_rectangle.fill_color)
-        self.canvas_output.create_text(x0 + 10, y0 + 10, text=f"{y0 - y1}", fill="white")
+        # swapped calculation of subtraction due to tkinter canvas forcing smaller number to be y0 and larger number to be y1
+        self.canvas_output.create_text(x0 + 10, y1 + 10, text=f"{y1 - y0}", fill="white")
         new_rectangle.id = new_id
         self.rectangles.append(new_rectangle)
+        # debug to discover that canvas may swap y values in my rectangle canvas items
+        # print(f"id: {new_id}, data y0: {y0}, y1: {y1}; view y0: {self.canvas_output.coords(new_id)[1]}, y1: {self.canvas_output.coords(new_id)[3]}")
 
     def highlight_rectangle_for_a_time(self, proposed_rectangle):
         '''Highlight a rectangle for an amount of time, then un-highlight that rectangle.'''
@@ -50,43 +54,65 @@ class Gui_sort:
         self.root.after(2 * delay, self.root.update())
 
 
-    def sort_step(self):
+    def sort(self):
+        '''Repeatedly call sort step.'''
+        # iterate over the list a number of times to guarantee that the worst case for this algorithm is covered (smallest value at the end of the list)
+        for iteration in range(len(self.rectangles) - 1):
+            # this will be one pass of bubble sort
+            for index in range(len(self.rectangles) - 1):
+                # debug to detect that we need length of list -1 because we are looking at a window of values that is two elements wide.
+                # print(f"index in sort: {index}")
+                self.sort_step(index, index + 1)
+
+
+    def sort_step(self, rect0_index, rect1_index):
         '''Perform one step of a sorting algorithm.'''
         # find next spot that needs sorted
         # let's just swap first two values if needed...
         # swap two values if needed
-        rect0 = self.rectangles[0]
-        rect1 = self.rectangles[1]
-        rect0_height = rect0.y0 - rect0.y1
-        rect1_height = rect1.y0 - rect1.y1
+        # fetch based on model (data)
+        rect0 = self.rectangles[rect0_index]
+        rect1 = self.rectangles[rect1_index]
+        # swapped calculation of subtraction due to tkinter canvas forcing smaller number to be y0 and larger number to be y1
+        rect0_height = rect0.y1 - rect0.y0
+        rect1_height = rect1.y1 - rect1.y0
         if rect0_height > rect1_height:
             # swap them (ask canvas to swap x values of proposed rectangles)
+            # local variables (so, these variables will not themselves update either model or view)
             rect0_coords = self.canvas_output.coords(rect0.id)
             rect1_coords = self.canvas_output.coords(rect1.id)
 
-            # swap x values of rect0_coords with rect1_coords
-            #   similar to this tuple values swap
-            #   x, y = y, x
-            rect0_coords[0], rect0_coords[2], rect1_coords[0], rect1_coords[2] = \
-                rect1_coords[0], rect1_coords[2], rect0_coords[0], rect0_coords[2]
+            # swap a y value of rect0_coords with rect1_coords
+            #   tuple swap
+            # swap local variable data
+            rect0_coords[1], rect1_coords[1] = rect1_coords[1], rect0_coords[1]
+            # could also be swapped with a temporary variable
+            # temp_coord = rect0_coords[1]
+            # rect0_coords[1] = rect1_coords[1]
+            # rect1_coords[1] = temp_coord
+
             # remember to ask the cavas to reflect that!
+            # update view (canvas items)
             self.canvas_output.coords(rect0.id, rect0_coords)
             self.canvas_output.coords(rect1.id, rect1_coords)
             # we should also update our model rectangle objects x coords!!!
 
-            # also swap x positions of the rectangle's associated label!
+            # also swap text in the rectangle's associated label!
             """ Important note!!! +1 after rect0.id and rect1.id is because we know the order
                     that these objects were created in!!!
             """
-            rect0_label_coords = self.canvas_output.coords(rect0.id + 1)
-            rect1_label_coords = self.canvas_output.coords(rect1.id + 1)
+            # fetch text item from canvas (view) into local variables
+            rect0_label_text = self.canvas_output.itemcget(rect0.id + 1, "text")
+            rect1_label_text = self.canvas_output.itemcget(rect1.id + 1, "text")
 
-            # swap x values of rect0_label_coords with rect1_label_coords
-            rect0_label_coords[0], rect1_label_coords[0] = \
-                rect1_label_coords[0], rect0_label_coords[0]
             # remember to ask the cavas to reflect that!
-            self.canvas_output.coords(rect0.id + 1, rect0_label_coords)
-            self.canvas_output.coords(rect1.id + 1, rect1_label_coords)
+            # swap values shown in canvas (view)
+            self.canvas_output.itemconfig(rect0.id + 1, text=rect1_label_text)
+            self.canvas_output.itemconfig(rect1.id + 1, text=rect0_label_text)
+
+            # update data in model as well
+            # swap rectangle heights in model data
+            self.rectangles[rect0_index].y0, self.rectangles[rect1_index].y0 = self.rectangles[rect1_index].y0, self.rectangles[rect0_index].y0
             
         
 
@@ -106,7 +132,7 @@ class Gui_sort:
         self.input_text = tk.Entry(self.root, width=10)
         self.input_text.grid(column=2, row=0)
         self.input_text.focus_set()
-        self.input_text.bind('<Return>', lambda event: self.sort_step())
+        self.input_text.bind('<Return>', lambda event: self.sort())
 
         self.canavs_output_height = 150
         self.canavs_output_width = 640
@@ -118,17 +144,23 @@ class Gui_sort:
 
         # data objects
         self.rectangles = []
+        num_rectangles = 10
         width = 30
         # height will be random in the end
         x_offset = 20
         x_buffer = 10
         y_bottom_offset = 20
-        for count in range(0,10):
+        for count in range(0,num_rectangles):
             x0 = count * (width + x_buffer) + x_offset
-            y0 = self.canavs_output_height - y_bottom_offset
+            # swapped calculation of y0 and y1 because tkinter canvas forces the smaller number to be y0 and the larger to be y1
+            # force last element to be sortest in list
+            if count == num_rectangles - 1:
+                y0 = self.canavs_output_height - y_bottom_offset - 2
+            else:
+                y0 = self.canavs_output_height - y_bottom_offset - random.randrange(10, 110, 10)
             x1 = count * (width + x_buffer) + x_offset + width
             # should probably have min, max, and step be variables...
-            y1 = self.canavs_output_height - y_bottom_offset - random.randrange(10, 110, 10)
+            y1 = self.canavs_output_height - y_bottom_offset
             fill_color = "blue"
             self.add_rectangle(x0, y0, x1, y1, fill_color)
             
