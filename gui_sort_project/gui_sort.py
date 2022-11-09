@@ -62,6 +62,7 @@ class Gui_sort:
                 # debug to detect that we need length of list -1 because we are looking at a window of values that is two elements wide.
                 # print(f"index in sort: {index}")
                 self.highlight_rectangle_for_a_time(self.rectangles[index])
+                self.highlight_rectangle_for_a_time(self.rectangles[index + 1])
                 self.sort_step(index, index + 1)
 
 
