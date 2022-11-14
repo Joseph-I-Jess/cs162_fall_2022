@@ -38,7 +38,7 @@ class exception_basics:
         '''Return the ratio of ager versus average lifespan.'''
         #lifespan_age_reciprocal = None
         try:
-            raise ExpectedError # if an exception is raised, but is not caught, the exception is raised up to the code that called this code... up through your main file and if that is not caught, then Python crashes your program
+            # raise ExpectedError # if an exception is raised, but is not caught, the exception is raised up to the code that called this code... up through your main file and if that is not caught, then Python crashes your program
             if self.age == -1:
                 raise SpecialDivisionError
             lifespan_age_reciprocal = average_lifespan / self.age
@@ -53,3 +53,6 @@ class exception_basics:
 
         # continues executing the function after the except clause has happened
         return -42 # Joseph just picking an easy to identify default return value...
+
+        # try to run tests and coverage on lines that cannot execute
+        print("This line should never run, contact your system administrator for details...")
