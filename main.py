@@ -1,19 +1,22 @@
 # demo exceptions
 
-import exception_basics.exceptions_basics as exc
+import inheritance_basics.inheritance_basics as inh
 
-exc_basics = exc.exception_basics("Joseph", 36, "male")
+cat_1 = inh.Cat(tail="short", whiskers="curly")
+# we do not need to do this... most of the time
+cat_1.__dict__["whiskers"] = "none" # interesting quirk about Python's design🙂!
+cat_2 = inh.Cat("short straight", "short")
 
-print(exc_basics)
-print(f"{exc_basics.name}'s driving age ({exc.driving_age}) ratio is: {exc_basics.driving_age_ratio()}")
-try:
-    print(f"{exc_basics.name}'s lifespan age ({exc.average_lifespan}) ratio is: {exc_basics.lifespan_age_ratio()}")
-except exc.ExpectedError as error:
-    print(f"an expected error has occurred: {error}")
+print(cat_1)
+print(f"cat_1 vocalizes like this: \"{cat_1.vocalize()}\"")
 
-exc_basics2 = exc.exception_basics(new_age=-1)
+print(cat_2)
+print(f"cat_2 vocalizes like this: \"{cat_2.vocalize()}\"")
 
-print(exc_basics2)
-print(f"{exc_basics2.name}'s driving age ({exc.driving_age}) ratio is: {exc_basics2.driving_age_ratio()}")
-# no ExpectedError execpt clause within the try-except structure is here to catch the ExpectedError
-print(f"{exc_basics2.name}'s lifespan age ({exc.average_lifespan}) ratio is: {exc_basics2.lifespan_age_ratio()}")
+tiger_1 = inh.Tiger()
+print(tiger_1)
+print(f"tiger_1 vocalizes like this: \"{tiger_1.vocalize()}\"")
+
+house_cat_1 = inh.House_cat()
+print(house_cat_1)
+print(f"house_cat_1 vocalizes like this: \"{house_cat_1.vocalize()}\"")
