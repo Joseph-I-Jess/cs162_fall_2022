@@ -1,0 +1,24 @@
+Rpg
+  - text based input on a GUI
+    -- entry for input
+      --- bind enter key to submit function
+    -- submit button for confimation of input
+  - some sort of command interpreter
+    -- move
+      --- check if we can move that direction (can be blocked by monster or other (door) or there just not being a room connected in that direction)
+    -- fight
+      --- player first, enemy second, keep alternating?
+      --- what happens when a player loses a fight?
+    -- get
+      --- from floor
+      --- from an inventory
+    -- save or load
+    -- other?
+  - some GUI to show the current state of the game
+    -- character stats
+      --- attributes, abilities, equipment, inventory?
+    -- map displayed
+      --- character
+      --- enemies
+      --- items
+      --- other
