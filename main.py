@@ -7,5 +7,6 @@ main_window = rpg_window.Rpg_window()
 model = rpg.Rpg()
 
 main_window.insert_into_character(model.get_player_string())
+main_window.set_fight_command(model.fight)
 
 main_window.mainloop()
