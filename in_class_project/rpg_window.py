@@ -3,7 +3,7 @@ import tkinter as tk
 """
     ToDo:
         .Add move capability to input handler
-        Move get_input to its own command interpreter class...
+        .Move get_input to its own command interpreter class...
         Add map_cells to the Map part of the Rpg_window
         Add Item class, add item behavior to character, enemy, and map_cell
 """
