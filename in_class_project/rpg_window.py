@@ -38,47 +38,29 @@ class Rpg_window:
 
         self.input.focus_set()
 
-        self.fight_command = None
+        self.model = None
 
     def insert_into_character(self, character_string: str):
         self.character.insert(tk.INSERT, character_string)
 
     def get_input(self):
-        '''Get input from input box and try to parse and execute that command.'''
-        """
-            ToDo:
-                .add move command
-                add help commands (to show commands)
-                add look command (for room or enemy or item later?)
-                add exit command
-        """
-        input_string = self.input.get().lower()
+        '''Get input from input box and pass it to the command interpreter.'''
+        input_string = self.input.get()
 
-        input_words = input_string.split()
-        #debug
-        #print(f"input_words: {input_words}")
-
-        if input_words[0] == "stats":
-            self.output.insert(tk.END, self.character.get('1.0', tk.END))
-        elif len(input_words) >= 2 and input_words[0] == "fight":
-            # check that there are at least two words...
-            command_result = self.fight_command(input_words[1])
-            self.output.insert(tk.END, command_result + "\n")
-        elif len(input_words) >= 2 and input_words[0] == "move":
-            # check that there are at least two words...
-            command_result = self.move_command(input_words[1])
-            self.output.insert(tk.END, command_result + "\n")
+        if self.model is not None:
+            result = self.model.interpret_command(input_string)
         else:
-            self.output.insert(tk.END, f"invalid command: {input_string}\n")
+            print("The model has not been set in this window!")
+            raise ModelNotInitiializedError()
 
+        self.output.insert(tk.END, f"{result}\n")
         self.output.yview(tk.END)
 
-    def set_fight_command(self, proposed_fight_command):
-        self.fight_command = proposed_fight_command
-
-    def set_move_command(self, proposed_move_command):
-        self.move_command = proposed_move_command
-
+    def set_underlying_model(self, proposed_model):
+        self.model = proposed_model
         
     def mainloop(self):
         self.root.mainloop()
+
+class ModelNotInitiializedError(Exception):
+    pass

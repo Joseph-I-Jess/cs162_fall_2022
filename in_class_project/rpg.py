@@ -3,6 +3,7 @@
 import random
 
 import in_class_project.character as character
+import in_class_project.command_interpreter as command_interpreter
 import in_class_project.enemy as enemy
 import in_class_project.map_cell as map_cell
 
@@ -30,6 +31,15 @@ class Rpg:
 
         # set players starting position
         self.player_location = first_map_cell
+
+        # initialize the command interpreter
+        self.command_interpreter = command_interpreter.Command_interpreter(self)
+        self.command_interpreter.set_fight_command(self.fight)
+        self.command_interpreter.set_move_command(self.move)
+
+    def interpret_command(self, proposed_command):
+        '''Pass command to interpreter and return result to caller.'''
+        return self.command_interpreter.interpret_command(proposed_command)
 
     def get_player_string(self):
         return self.player.__str__()
@@ -85,7 +95,7 @@ class Rpg:
         if proposed_exit_string in current_location_exits:
             # if valid, move player to new room
             self.player_location = current_location_exits[proposed_exit_string]
-            result = f"You are now in the room named {self.player_location.name}"
+            result = f"You have entered \"{self.player_location.name}\""
         else:
             # possible return of invalid value
             result = f"{proposed_exit_string} is an invalid exit"
