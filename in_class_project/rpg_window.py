@@ -2,10 +2,10 @@ import tkinter as tk
 
 """
     ToDo:
-        Add move capability to input handler
+        .Add move capability to input handler
+        Move get_input to its own command interpreter class...
         Add map_cells to the Map part of the Rpg_window
         Add Item class, add item behavior to character, enemy, and map_cell
-        Move input_handler to its own command interpreter class...
 """
 
 class Rpg_window:
@@ -45,6 +45,13 @@ class Rpg_window:
 
     def get_input(self):
         '''Get input from input box and try to parse and execute that command.'''
+        """
+            ToDo:
+                .add move command
+                add help commands (to show commands)
+                add look command (for room or enemy or item later?)
+                add exit command
+        """
         input_string = self.input.get().lower()
 
         input_words = input_string.split()
@@ -57,6 +64,10 @@ class Rpg_window:
             # check that there are at least two words...
             command_result = self.fight_command(input_words[1])
             self.output.insert(tk.END, command_result + "\n")
+        elif len(input_words) >= 2 and input_words[0] == "move":
+            # check that there are at least two words...
+            command_result = self.move_command(input_words[1])
+            self.output.insert(tk.END, command_result + "\n")
         else:
             self.output.insert(tk.END, f"invalid command: {input_string}\n")
 
@@ -64,6 +75,9 @@ class Rpg_window:
 
     def set_fight_command(self, proposed_fight_command):
         self.fight_command = proposed_fight_command
+
+    def set_move_command(self, proposed_move_command):
+        self.move_command = proposed_move_command
 
         
     def mainloop(self):

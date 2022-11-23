@@ -21,15 +21,15 @@ class Rpg:
         self.map_cells = []
         
         # initialize map...
-        new_map_cell = map_cell.Map_cell("starting room", "Just the starting room of our game...", [self.enemy], [], 0, 0, {})
-        self.map_cells.append(new_map_cell)
+        first_map_cell = map_cell.Map_cell("starting room", "Just the starting room of our game...", [self.enemy], [], 0, 0, {})
+        self.map_cells.append(first_map_cell)
 
         second_map_cell = map_cell.Map_cell("room to the north", "North of the starting room of our game...", [], [], 0, 1, {})
-        new_map_cell.add_exit("north", second_map_cell)
+        first_map_cell.add_exit("north", second_map_cell)
         self.map_cells.append(second_map_cell)
 
         # set players starting position
-        self.player_location = new_map_cell
+        self.player_location = first_map_cell
 
     def get_player_string(self):
         return self.player.__str__()
@@ -75,4 +75,19 @@ class Rpg:
 
             result = enemy_result + "\n" + player_result
 
+        return result
+
+    def move(self, proposed_exit_string: str) -> str:
+        '''Attempt to move player from current map_cell through exit to destination map_cell and return a string either of the new map_cell or an invalid message.'''
+        result = ""
+        # need to check if that proposed_exit_string is a valid exit from the current room
+        current_location_exits = self.player_location.exits
+        if proposed_exit_string in current_location_exits:
+            # if valid, move player to new room
+            self.player_location = current_location_exits[proposed_exit_string]
+            result = f"You are now in the room named {self.player_location.name}"
+        else:
+            # possible return of invalid value
+            result = f"{proposed_exit_string} is an invalid exit"
+        
         return result
