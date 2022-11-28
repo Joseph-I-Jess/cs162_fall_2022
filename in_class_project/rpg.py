@@ -10,6 +10,9 @@ import in_class_project.map_cell as map_cell
 """
     ToDo:
         make fight more fun, do not allow defeated beings from participating!
+        make look also work with specified enemy or item!
+        make map cells show up on rpg window GUI!
+        make items and update places that should involve them!
 """
 
 class Rpg:
@@ -34,8 +37,12 @@ class Rpg:
 
         # initialize the command interpreter
         self.command_interpreter = command_interpreter.Command_interpreter(self)
-        self.command_interpreter.set_fight_command(self.fight)
-        self.command_interpreter.set_move_command(self.move)
+        self.command_interpreter.set_command("fight", self.fight, "fight <enemy>", ["fight", "f"])
+        self.command_interpreter.set_command("move", self.move, "move <direction>", ["move", "m"])
+        # instead of exit we could do a save and quit method!
+        self.command_interpreter.set_command("exit", exit, "exit", ["exit", "quit", "q", "ragequit"])
+        self.command_interpreter.set_command("stats", lambda my_list: self.player.__str__(), "stats", ["stats", "s"])
+        self.command_interpreter.set_command("look", self.look, "look", ["look", "l"])
 
     def interpret_command(self, proposed_command):
         '''Pass command to interpreter and return result to caller.'''
@@ -44,8 +51,8 @@ class Rpg:
     def get_player_string(self):
         return self.player.__str__()
 
-    def fight(self, proposed_enemy_name: str) -> str:
-        '''Either fight the proposed enemy or return that the enemy does not exist (without other side effects)'''
+    def fight(self, proposed_enemy_names: list[str]) -> str:
+        '''Either fight the first proposed enemy or return that the enemy does not exist (without other side effects)'''
 
         # result of this function...
         result = ""
@@ -53,7 +60,7 @@ class Rpg:
         # check that this enemy exists
         proposed_enemy = None
         for enemy in self.player_location.enemies:
-            if enemy.name == proposed_enemy_name:
+            if enemy.name == proposed_enemy_names[1]:
                 proposed_enemy = enemy
 
         if proposed_enemy is None:
@@ -87,17 +94,49 @@ class Rpg:
 
         return result
 
-    def move(self, proposed_exit_string: str) -> str:
+    def move(self, proposed_exit_strings: list[str]) -> str:
         '''Attempt to move player from current map_cell through exit to destination map_cell and return a string either of the new map_cell or an invalid message.'''
         result = ""
         # need to check if that proposed_exit_string is a valid exit from the current room
         current_location_exits = self.player_location.exits
-        if proposed_exit_string in current_location_exits:
+        if len(proposed_exit_strings) >= 2 and proposed_exit_strings[1] in current_location_exits:
             # if valid, move player to new room
-            self.player_location = current_location_exits[proposed_exit_string]
+            self.player_location = current_location_exits[proposed_exit_strings[1]]
             result = f"You have entered \"{self.player_location.name}\""
         else:
             # possible return of invalid value
-            result = f"{proposed_exit_string} is an invalid exit"
+            result = f"{proposed_exit_strings} is an invalid exit"
         
         return result
+
+    def look(self, proposed_objects: list[str]=None) -> str:
+        '''Look at some propopsed object or the room by default.'''
+        
+        result = ""
+        
+        if len(proposed_objects) <= 1:
+            # room look
+            current_room = self.player_location
+
+            result += f"{current_room.name}\n"
+            result += f"\t{current_room.description}\n"
+            result += "exits:\n"
+            if len(current_room.exits) <= 0:
+                result += "\tNo obvious exits!"
+            else:
+                for exit_direction in current_room.exits.keys():
+                    result += f"\t{exit_direction}\n"
+
+            # enemies in room
+            if len(current_room.enemies) >= 1:
+                result += "enemies:\n"
+                for enemy in current_room.enemies:
+                    result += f"\t{enemy.name}\n"
+
+            # items in room
+            if len(current_room.items) >= 1:
+                result += "items:\n"
+                for item in current_room.items:
+                    result += f"\t{item.name}\n"
+
+            return result
