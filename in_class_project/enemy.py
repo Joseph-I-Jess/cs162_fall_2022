@@ -3,6 +3,7 @@
 class Enemy:
     '''An enemy in an RPG.'''
     def __init__(self):
+        self.graphical_id = None # to be used if this object is drawn on a graphical space
         self.name = "enemy"
         self.level = 1
         self.attack = 10 # damage on hit

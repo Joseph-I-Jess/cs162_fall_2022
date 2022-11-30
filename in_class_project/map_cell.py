@@ -1,10 +1,11 @@
 """Represent a single map cell in an RPG."""
 
 class Map_cell:
-    def __init__(self, name: str="no name given", description: str="no description given", enemies: list=[], items:list=[], x: int=0, y: int=0, exits: dict={}):
+    def __init__(self, name: str="no name given", description: str="no description given", beings: list=[], items:list=[], x: int=0, y: int=0, exits: dict={}):
+        self.graphical_id = None # to be used if this object is drawn on a graphical space
         self.name = name
         self.description = description
-        self.enemies = enemies
+        self.beings = beings
         self.items = items
         self.x = x
         self.y = y

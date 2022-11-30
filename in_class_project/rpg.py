@@ -20,20 +20,20 @@ class Rpg:
 
     def __init__(self):
         self.player = character.Character()
-        self.player_location = None
+
         self.enemy = enemy.Enemy()
         self.map_cells = []
         
         # initialize map...
-        first_map_cell = map_cell.Map_cell("starting room", "Just the starting room of our game...", [self.enemy], [], 0, 0, {})
+        first_map_cell = map_cell.Map_cell(name="starting room", description="Just the starting room of our game...", beings=[self.player, self.enemy], items=[], x=0, y=0, exits={})
         self.map_cells.append(first_map_cell)
 
-        second_map_cell = map_cell.Map_cell("room to the north", "North of the starting room of our game...", [], [], 0, 1, {})
-        first_map_cell.add_exit("north", second_map_cell)
+        second_map_cell = map_cell.Map_cell("room to the south", "North of the starting room of our game...", [], [], 0, 1, {"north":first_map_cell})
+        first_map_cell.add_exit("south", second_map_cell)
         self.map_cells.append(second_map_cell)
 
         # set players starting position
-        self.player_location = first_map_cell
+        self.player.set_location(first_map_cell)
 
         # initialize the command interpreter
         self.command_interpreter = command_interpreter.Command_interpreter(self)
@@ -43,6 +43,18 @@ class Rpg:
         self.command_interpreter.set_command("exit", exit, "exit", ["exit", "quit", "q", "ragequit"])
         self.command_interpreter.set_command("stats", lambda my_list: self.player.__str__(), "stats", ["stats", "s"])
         self.command_interpreter.set_command("look", self.look, "look", ["look", "l"])
+
+        self.view = None
+
+    def set_view(self, proposed_view):
+        self.view = proposed_view
+
+    def update_view(self):
+        if self.view is not None:
+            self.view.set_map_data(self.map_cells)
+
+    def get_map_data(self) -> list[map_cell.Map_cell]:
+        return self.map_cells
 
     def interpret_command(self, proposed_command):
         '''Pass command to interpreter and return result to caller.'''
@@ -59,7 +71,7 @@ class Rpg:
 
         # check that this enemy exists
         proposed_enemy = None
-        for enemy in self.player_location.enemies:
+        for enemy in self.player.location.beings:
             if enemy.name == proposed_enemy_names[1]:
                 proposed_enemy = enemy
 
@@ -76,7 +88,9 @@ class Rpg:
             if proposed_enemy.health <= 0:
                 proposed_enemy.health = 0
                 enemy_result = f"\nThe {proposed_enemy.name} is defeated!"
-                self.player_location.enemies.remove(proposed_enemy)
+                self.player.location.beings.remove(proposed_enemy)
+                # update view
+                self.update_view()
             
             enemy_result = f"damage done to enemy: {damage_to_enemy}, leaving it with {proposed_enemy.health} health left." + enemy_result
 
@@ -87,6 +101,7 @@ class Rpg:
             if self.player.health <= 0:
                 self.player.health = 0
                 player_result = f"\nThe {self.player.name} is defeated!"
+                # should we remove the player from the location and update the view?
             
             player_result = f"damage done to player: {damage_to_player}, leaving it with {self.player.health} health left." + player_result
 
@@ -98,11 +113,20 @@ class Rpg:
         '''Attempt to move player from current map_cell through exit to destination map_cell and return a string either of the new map_cell or an invalid message.'''
         result = ""
         # need to check if that proposed_exit_string is a valid exit from the current room
-        current_location_exits = self.player_location.exits
+        current_location_exits = self.player.location.exits
         if len(proposed_exit_strings) >= 2 and proposed_exit_strings[1] in current_location_exits:
             # if valid, move player to new room
-            self.player_location = current_location_exits[proposed_exit_strings[1]]
-            result = f"You have entered \"{self.player_location.name}\""
+            new_room = current_location_exits[proposed_exit_strings[1]]
+            # remove player from current map_cell list
+            self.player.location.beings.remove(self.player)
+            # change player's internal location
+            self.player.set_location(new_room)
+            # add player to new map_cell list
+            new_room.beings.append(self.player)
+            # update view
+            self.update_view()
+            # prompt that change succeeded
+            result = f"You have entered \"{self.player.location.name}\""
         else:
             # possible return of invalid value
             result = f"{proposed_exit_strings} is an invalid exit"
@@ -116,7 +140,7 @@ class Rpg:
         
         if len(proposed_objects) <= 1:
             # room look
-            current_room = self.player_location
+            current_room = self.player.location
 
             result += f"{current_room.name}\n"
             result += f"\t{current_room.description}\n"
@@ -128,9 +152,9 @@ class Rpg:
                     result += f"\t{exit_direction}\n"
 
             # enemies in room
-            if len(current_room.enemies) >= 1:
-                result += "enemies:\n"
-                for enemy in current_room.enemies:
+            if len(current_room.beings) >= 1:
+                result += "beings:\n"
+                for enemy in current_room.beings:
                     result += f"\t{enemy.name}\n"
 
             # items in room

@@ -16,7 +16,10 @@ import in_class_project.rpg_window as rpg_window
 main_window = rpg_window.Rpg_window()
 model = rpg.Rpg()
 
-main_window.set_underlying_model(model)
+model.set_view(main_window)
+
+main_window.set_model(model)
+main_window.set_map_data(model.get_map_data())
 
 main_window.insert_into_character(model.get_player_string())
 
