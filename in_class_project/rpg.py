@@ -5,6 +5,7 @@ import random
 import in_class_project.character as character
 import in_class_project.command_interpreter as command_interpreter
 import in_class_project.enemy as enemy
+import in_class_project.item as item
 import in_class_project.map_cell as map_cell
 
 """
@@ -25,10 +26,11 @@ class Rpg:
         self.map_cells = []
         
         # initialize map...
-        first_map_cell = map_cell.Map_cell(name="starting room", description="Just the starting room of our game...", beings=[self.player, self.enemy], items=[], x=0, y=0, exits={})
+        first_map_cell = map_cell.Map_cell(name="starting room", description="Just the starting room of our game...", beings=[self.player, self.enemy], items={}, x=0, y=0, exits={})
         self.map_cells.append(first_map_cell)
 
-        second_map_cell = map_cell.Map_cell("room to the south", "North of the starting room of our game...", [], [], 0, 1, {"north":first_map_cell})
+        dagger = item.Item("dagger", attack=3, defense=1)
+        second_map_cell = map_cell.Map_cell("room to the south", "North of the starting room of our game...", [], {dagger.name: dagger}, 0, 1, {"north":first_map_cell})
         first_map_cell.add_exit("south", second_map_cell)
         self.map_cells.append(second_map_cell)
 
@@ -43,6 +45,9 @@ class Rpg:
         self.command_interpreter.set_command("exit", exit, "exit", ["exit", "quit", "q", "ragequit"])
         self.command_interpreter.set_command("stats", lambda my_list: self.player.__str__(), "stats", ["stats", "s"])
         self.command_interpreter.set_command("look", self.look, "look", ["look", "l"])
+        self.command_interpreter.set_command("get", self.get, "get <item>", ["get", "g"])
+        self.command_interpreter.set_command("equip", self.player.equip, "equip <equipment name>", ["equip", "e"])
+        self.command_interpreter.set_command("unequip", self.player.unequip, "unequip <equipment name>", ["unequip", "u"])
 
         self.view = None
 
@@ -161,6 +166,26 @@ class Rpg:
             if len(current_room.items) >= 1:
                 result += "items:\n"
                 for item in current_room.items:
-                    result += f"\t{item.name}\n"
+                    result += f"\t{current_room.items[item].name}\n"
 
             return result
+
+    def get(self, proposed_item_names: list[str]) -> str:
+        result = ""
+        
+        if len(proposed_item_names) >= 2 and proposed_item_names[1] in self.player.location.items:
+            proposed_item_name = proposed_item_names[1]
+            proposed_item = self.player.location.items[proposed_item_name]
+
+            # remove item from room
+            self.player.location.items.pop(proposed_item_name, None)
+
+            # add item to player inventory
+            self.player.inventory[proposed_item_name] = proposed_item
+
+            result = f"got {proposed_item_name}!"
+        else:
+            result = f"No item named {proposed_item_name} in this room"
+
+        return result
+
