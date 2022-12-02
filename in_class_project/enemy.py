@@ -1,6 +1,6 @@
 '''A class to represent an enemy in an RPG.'''
 
-import being
+import in_class_project.being as being
 
 class Enemy(being.Being):
     '''An enemy in an RPG.'''

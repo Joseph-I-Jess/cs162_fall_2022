@@ -29,7 +29,7 @@ class Rpg:
         first_map_cell = map_cell.Map_cell(name="starting room", description="Just the starting room of our game...", beings=[self.player, self.enemy], items={}, x=0, y=0, exits={})
         self.map_cells.append(first_map_cell)
 
-        dagger = item.Item("dagger", attack=3, defense=1)
+        dagger = item.Item(name="dagger", attack=3, defense=1)
         second_map_cell = map_cell.Map_cell("room to the south", "North of the starting room of our game...", [], {dagger.name: dagger}, 0, 1, {"north":first_map_cell})
         first_map_cell.add_exit("south", second_map_cell)
         self.map_cells.append(second_map_cell)
@@ -178,8 +178,10 @@ class Rpg:
     def get(self, proposed_item_names: list[str]) -> str:
         result = ""
         
-        if len(proposed_item_names) >= 2 and proposed_item_names[1] in self.player.location.items:
+        if len(proposed_item_names) >= 2:
             proposed_item_name = proposed_item_names[1]
+
+        if proposed_item_name in self.player.location.items:
             proposed_item = self.player.location.items[proposed_item_name]
 
             # remove item from room

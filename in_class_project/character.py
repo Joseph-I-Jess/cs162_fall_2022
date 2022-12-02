@@ -1,6 +1,6 @@
 '''Create and manage a character'''
 
-import being
+import in_class_project.being as being
 
 """
     ToDo:

@@ -1,6 +1,7 @@
 name: hero
 level: 1
-attack: 10
-defense: 10
-health: 2
+attack: 13
+defense: 11
+health: 11
 items:
+	(equipped) dagger
