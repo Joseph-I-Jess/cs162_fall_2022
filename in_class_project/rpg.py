@@ -51,6 +51,9 @@ class Rpg:
 
         self.command_interpreter.set_command("save", self.save, "save", ["save"])
 
+        # We could even have commands based on functions rather than methods!
+        self.command_interpreter.set_command("recurse", recurse, "recurse", ["recurse"])
+
         self.view = None
 
     def set_view(self, proposed_view):
@@ -191,5 +194,30 @@ class Rpg:
 
         return result
 
-    
+    def save(self, args):
+        '''Save player data to a file.'''
+        result = "Save failed!"
 
+        with open(f"{self.player.name}.sav", "w") as output_file:
+            output_file.write(self.player.__str__())
+            result = f"Save for {self.player.name} succeeded!"
+
+        return result
+
+def recurse(str_list: list[str]) -> str:
+    '''Check and fetch first value, make sure it is an int.'''
+    result = "invalid use of recurse... go look it up..."
+
+    if len(str_list) >= 2 and str_list[1].isnumeric():
+        result = f" the factorial of {str_list} is: {recurse_helper(int(str_list[1]))}!"
+
+    return result
+
+def recurse_helper(end: int) -> int:
+    '''Show recursion with this factorial function...'''
+    if end in [0, 1]:
+        return 1
+    elif end < 0:
+        return -1
+    
+    return end * recurse_helper(end - 1)

@@ -1,14 +1,8 @@
 '''A class to represent an enemy in an RPG.'''
 
-class Enemy:
-    '''An enemy in an RPG.'''
-    def __init__(self):
-        self.graphical_id = None # to be used if this object is drawn on a graphical space
-        self.name = "enemy"
-        self.level = 1
-        self.attack = 10 # damage on hit
-        self.defense = 10 # damage reduction when hit
-        self.health = 10
+import being
 
-    def __str__(self):
-        return f"name: {self.name}\nlevel: {self.level}\nattack: {self.attack}\ndefense: {self.defense}\nhealth: {self.health}"
+class Enemy(being.Being):
+    '''An enemy in an RPG.'''
+    def __init__(self, graphical_id=None, location=None, name="enemy", level=1, attack=being.Being.DEFAULT_ATTACK, defense=being.Being.DEFAULT_DEFENSE, health=being.Being.DEFAULT_HEALTH, inventory={}, equipment={}):
+        super().__init__(graphical_id, location, name, level, attack, defense, health, inventory, equipment)
