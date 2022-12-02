@@ -11,9 +11,11 @@ import in_class_project.being as being
 class Character(being.Being):
     '''Player character class.'''
 
+    DEFAULT_CHARACTER_GRAPHICS_FILE_PATH = ".\in_class_project\images\player.png"
+
     # add type hints!?
-    def __init__(self, graphical_id=None, location=None, name="hero", level=1, attack=being.Being.DEFAULT_ATTACK, defense=being.Being.DEFAULT_DEFENSE, health=being.Being.DEFAULT_HEALTH, inventory={}, equipment={}):
-        super().__init__(graphical_id, location, name, level, attack, defense, health, inventory, equipment)
+    def __init__(self, graphical_id=None, graphics_file=DEFAULT_CHARACTER_GRAPHICS_FILE_PATH, location=None, name="hero", level=1, attack=being.Being.DEFAULT_ATTACK, defense=being.Being.DEFAULT_DEFENSE, health=being.Being.DEFAULT_HEALTH, inventory={}, equipment={}):
+        super().__init__(graphical_id, graphics_file, location, name, level, attack, defense, health, inventory, equipment)
 
     def set_location(self, new_location=None):
         self.location = new_location

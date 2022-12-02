@@ -20,7 +20,7 @@ class Rpg:
     '''Main rpg management class.'''
 
     def __init__(self):
-        self.player = character.Character()
+        self.player = character.Character() # use default character graphics file path
 
         self.enemy = enemy.Enemy()
         self.map_cells = []

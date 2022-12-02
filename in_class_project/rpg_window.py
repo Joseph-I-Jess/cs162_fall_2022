@@ -48,8 +48,11 @@ class Rpg_window:
         self.input = tk.Entry(self.root, width=60)
         self.input.grid(column=0, row=2, columnspan=5)
         self.input.bind('<Return>', lambda event: self.get_input())
+        self.input.bind('<Escape>', lambda event: self.clear_input())
+        self.input.bind('<Up>', lambda event: self.recall_previous_command())
         self.submit = tk.Button(self.root, text="submit", command=self.get_input)
         self.submit.grid(column=5, row=2, columnspan=1)
+        self.previous_command = ""
 
         self.input.focus_set()
 
@@ -70,6 +73,17 @@ class Rpg_window:
 
         self.output.insert(tk.END, f"{result}\n")
         self.output.yview(tk.END)
+
+        self.previous_command = input_string
+        self.clear_input()
+
+    def clear_input(self):
+        self.input.delete(0, tk.END)
+
+    def recall_previous_command(self):
+        print(f"self.previous_command: {self.previous_command}")
+        self.clear_input()
+        self.input.insert(0, self.previous_command)
 
     def set_model(self, proposed_model):
         self.model = proposed_model

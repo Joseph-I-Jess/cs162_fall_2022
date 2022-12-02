@@ -9,8 +9,8 @@ class Being(game_object.Game_object):
     DEFAULT_DEFENSE = 10
     DEFAULT_HEALTH = 10
 
-    def __init__(self, graphical_id=None, location=None, name="being", level=1, attack=DEFAULT_ATTACK, defense=DEFAULT_DEFENSE, health=DEFAULT_HEALTH, inventory={}, equipment={}):
-        super().__init__(graphical_id, location, name, attack, defense, health)
+    def __init__(self, graphical_id=None, graphics_file=None, location=None, name="being", level=1, attack=DEFAULT_ATTACK, defense=DEFAULT_DEFENSE, health=DEFAULT_HEALTH, inventory={}, equipment={}):
+        super().__init__(graphical_id, graphics_file, location, name, attack, defense, health)
         self.level = level
         
         self.inventory = inventory # all items the character carries

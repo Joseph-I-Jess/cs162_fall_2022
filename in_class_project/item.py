@@ -13,7 +13,7 @@ class Item(game_object.Game_object):
     DEFAULT_DEFENSE = 0
     DEFAULT_HEALTH = 0
 
-    def __init__(self, graphical_id=None, location=None, name="an item", attack=DEFAULT_ATTACK, defense=DEFAULT_DEFENSE, health=DEFAULT_HEALTH, type="equipment"):
-        super().__init__(graphical_id, location, name, attack, defense, health)
+    def __init__(self, graphical_id=None, graphics_file=None, location=None, name="an item", attack=DEFAULT_ATTACK, defense=DEFAULT_DEFENSE, health=DEFAULT_HEALTH, type="equipment"):
+        super().__init__(graphical_id, graphics_file, location, name, attack, defense, health)
 
         self.type = type
