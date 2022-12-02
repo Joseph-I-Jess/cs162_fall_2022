@@ -30,7 +30,7 @@ class Rpg:
         self.map_cells.append(first_map_cell)
 
         dagger = item.Item(name="dagger", attack=3, defense=1)
-        second_map_cell = map_cell.Map_cell("room to the south", "North of the starting room of our game...", [], {dagger.name: dagger}, 0, 1, {"north":first_map_cell})
+        second_map_cell = map_cell.Map_cell("room to the south", "North of the starting room of our game...", [], [dagger], 0, 1, {"north":first_map_cell})
         first_map_cell.add_exit("south", second_map_cell)
         self.map_cells.append(second_map_cell)
 
@@ -171,7 +171,7 @@ class Rpg:
             if len(current_room.items) >= 1:
                 result += "items:\n"
                 for item in current_room.items:
-                    result += f"\t{current_room.items[item].name}\n"
+                    result += f"\t{item.name}\n"
 
             return result
 
@@ -180,19 +180,27 @@ class Rpg:
         
         if len(proposed_item_names) >= 2:
             proposed_item_name = proposed_item_names[1]
+        
+        proposed_item = None
+        # find first instance of item with thae proposed name
+        for current_item in self.player.location.items:
+            if current_item.name == proposed_item_name:
+                proposed_item = current_item
+                break
 
-        if proposed_item_name in self.player.location.items:
-            proposed_item = self.player.location.items[proposed_item_name]
-
+        if proposed_item is not None:
             # remove item from room
-            self.player.location.items.pop(proposed_item_name, None)
+            self.player.location.items.remove(proposed_item)
 
             # add item to player inventory
+            # fix this to be a list instead of a dictionary...
             self.player.inventory[proposed_item_name] = proposed_item
 
             result = f"got {proposed_item_name}!"
         else:
             result = f"No item named {proposed_item_name} in this room"
+
+        self.update_view()
 
         return result
 

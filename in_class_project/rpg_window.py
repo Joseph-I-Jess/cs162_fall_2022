@@ -76,6 +76,8 @@ class Rpg_window:
 
     def set_map_data(self, new_map_data=None) -> None:
         '''Clear and redraw map, or just clear it if new map data is none.'''
+        self.map.delete("all")
+
         for current_map_cell in new_map_data:
             # fetch x, y, coordinates to draw room
             # where should my gap be?  Fix to have gaps included!
@@ -102,9 +104,17 @@ class Rpg_window:
                     map_being_color = self.map_enemy_color
                 being.graphical_id = self.map.create_rectangle(being_x0, being_y0, being_x1, being_y1, fill=map_being_color)
 
+            # draw items
+            for current_item in current_map_cell.items:
+                # item has no x offset but does have a y offset
+                item_x0 = current_map_cell_x0
+                item_y0 = current_map_cell_y0 + self.map_cell_size / 2
+                item_x1 = current_map_cell_x0 + self.map_cell_size / 2
+                item_y1 = current_map_cell_y0 + self.map_cell_size
+                current_item.graphical_id = self.map.create_rectangle(item_x0, item_y0, item_x1, item_y1, fill=self.map_item_color)
+
             # draw exits
 
-            # draw items?
 
     # add back in later to make redrawing the map faster and less expensive?!
     # def remove_map_data_item(self, old_id):
