@@ -173,7 +173,42 @@ class Rpg:
                 for item in current_room.items:
                     result += f"\t{item.name}\n"
 
-            return result
+        else:
+            # if we get here we have 2 or more strings in the input list
+            # order of target of look: beings, items, then exits
+            current_location = self.player.location
+            proposed_object_name = proposed_objects[1]
+            category_spacer = "\n" + 30*"-" + "\n"
+            
+            if any(proposed_object_name == being.name for being in current_location.beings):
+                result += f"beings named {proposed_object_name}:"
+                result += category_spacer
+                for being in current_location.beings:
+                    if proposed_object_name == being.name:
+                        result += f"{being.__str__()}"
+                result += category_spacer
+            else:
+                result += f"No beings named {proposed_object_name}\n\n"
+            
+            if any(proposed_object_name == item.name for item in current_location.items):
+                result += f"items named {proposed_object_name}:"
+                result += category_spacer
+                for item in current_location.items:
+                    if proposed_object_name == item.name:
+                        result += f"{item.__str__()}"
+                result += category_spacer
+            else:
+                result += f"No items named {proposed_object_name}\n\n"
+
+            if proposed_object_name in current_location.exits:
+                result += f"Exit {proposed_object_name} leads to:\n"
+                result += category_spacer
+                result += f"{current_location.exits[proposed_object_name].__str__()}"
+                result += category_spacer
+            else:
+                result += f"No exits named {proposed_object_name}\n\n"
+
+        return result
 
     def get(self, proposed_item_names: list[str]) -> str:
         result = ""

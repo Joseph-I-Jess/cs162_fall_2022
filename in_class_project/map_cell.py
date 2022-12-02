@@ -24,3 +24,20 @@ class Map_cell:
         else:
             # should we check anything about the proposed map cell...?
             self.exits[proposed_name] = proposed_map_cell
+
+    def __str__(self):
+        result = f"name: {self.name}\ndescription: {self.description}\n"
+        
+        result += "beings:\n"
+        for being in self.beings:
+            result += f"\t{being.name}\n"
+
+        result += "items:\n"
+        for item in self.items:
+            result += f"\t{item.name}\n"
+
+        result += "exits:\n"
+        for exit in self.exits:
+            result += f"\t{exit}\n"
+
+        return result

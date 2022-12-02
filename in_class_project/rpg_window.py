@@ -11,8 +11,10 @@ import in_class_project.enemy as enemy
         .Add Item class, add item behavior to character, enemy, and map_cell
         Add item graphically, add item to enemy to drop when defeated, updated all related data
 
-        Add images instead of colored rectangles!?
+        xAdd images instead of colored rectangles!?
             Add transparency?
+
+        recall_next_command has an off by one error requiring multiple presses... fix it
 """
 
 class Rpg_window:
@@ -50,9 +52,11 @@ class Rpg_window:
         self.input.bind('<Return>', lambda event: self.get_input())
         self.input.bind('<Escape>', lambda event: self.clear_input())
         self.input.bind('<Up>', lambda event: self.recall_previous_command())
+        self.input.bind('<Down>', lambda event: self.recall_next_command())
         self.submit = tk.Button(self.root, text="submit", command=self.get_input)
         self.submit.grid(column=5, row=2, columnspan=1)
-        self.previous_command = ""
+        self.previous_commands = [""]
+        self.previous_command_index = 0
 
         self.input.focus_set()
 
@@ -74,16 +78,34 @@ class Rpg_window:
         self.output.insert(tk.END, f"{result}\n")
         self.output.yview(tk.END)
 
-        self.previous_command = input_string
+        self.previous_commands.append(input_string)
+        self.previous_command_index = len(self.previous_commands) - 1
         self.clear_input()
 
     def clear_input(self):
         self.input.delete(0, tk.END)
 
     def recall_previous_command(self):
-        print(f"self.previous_command: {self.previous_command}")
         self.clear_input()
-        self.input.insert(0, self.previous_command)
+        previous_command = self.previous_commands[self.previous_command_index]
+        self.previous_command_index -= 1
+        # clamp value to avoid going out of bounds
+        if self.previous_command_index < 0:
+            self.previous_command_index = 0
+        self.input.insert(0, previous_command)
+
+    def recall_next_command(self):
+        '''Recall next command from current position in command history...
+        
+            has an off by one error, requiring pressing the button more than onec...
+        '''
+        self.clear_input()
+        next_previous_command = self.previous_commands[self.previous_command_index]
+        self.previous_command_index += 1
+        # clamp value to avoid going out of bounds
+        if self.previous_command_index >= len(self.previous_commands):
+            self.previous_command_index = len(self.previous_commands) - 1
+        self.input.insert(0, next_previous_command)
 
     def set_model(self, proposed_model):
         self.model = proposed_model

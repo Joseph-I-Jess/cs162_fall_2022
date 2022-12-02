@@ -17,3 +17,6 @@ class Item(game_object.Game_object):
         super().__init__(graphical_id, graphics_file, location, name, attack, defense, health)
 
         self.type = type
+
+    def __str__(self):
+        return f"name: {self.name}({self.type})\n\tattack: {self.attack}\n\tdefense: {self.defense}\n\thealth: {self.health}"
