@@ -32,7 +32,7 @@ class Command_interpreter:
         # debug
         #print(f"input_words: {input_words}")
 
-        if input_words[0] in self.commands:
+        if len(input_words) >= 1 and input_words[0] in self.commands:
             # should also do shortcut command checks here!
             result = self.commands[input_words[0]]["command"](input_words)
         else:

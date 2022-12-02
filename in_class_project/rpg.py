@@ -22,15 +22,24 @@ class Rpg:
     def __init__(self):
         self.player = character.Character() # use default character graphics file path
 
-        self.enemy = enemy.Enemy()
+        dagger1 = item.Item(name="dagger1", attack=4, defense=1, slot="weapon")
+        dagger2 = item.Item(name="dagger2", attack=5, slot="weapon")
+        leather_shirt = item.Item(name="leather_shirt", defense=2, slot="armor")
+
+        # self.enemy = enemy.Enemy(inventory=[dagger1, dagger2, leather_shirt])
+        # # equip an item on an enemy
+        # self.enemy.equip(["equip", "leather_shirt"])
+        # alternatively create the enemy with the correct attributes
+        self.enemy = enemy.Enemy(inventory=[dagger1, dagger2, leather_shirt], equipment={"leather_shirt":leather_shirt})
+        self.enemy.equipment_slots["armor"] = leather_shirt
         self.map_cells = []
         
         # initialize map...
-        first_map_cell = map_cell.Map_cell(name="starting room", description="Just the starting room of our game...", beings=[self.player, self.enemy], items={}, x=0, y=0, exits={})
+        first_map_cell = map_cell.Map_cell(name="starting room", description="Just the starting room of our game...", beings=[self.player, self.enemy], x=0, y=0)
         self.map_cells.append(first_map_cell)
 
-        dagger = item.Item(name="dagger", attack=3, defense=1)
-        second_map_cell = map_cell.Map_cell("room to the south", "North of the starting room of our game...", [], [dagger], 0, 1, {"north":first_map_cell})
+        dagger = item.Item(name="dagger", attack=3, defense=1, slot="weapon")
+        second_map_cell = map_cell.Map_cell(name="room to the south", description="North of the starting room of our game...", items=[dagger], x=0, y=1, exits={"north":first_map_cell})
         first_map_cell.add_exit("south", second_map_cell)
         self.map_cells.append(second_map_cell)
 
@@ -99,6 +108,10 @@ class Rpg:
                 proposed_enemy.health = 0
                 enemy_result = f"\nThe {proposed_enemy.name} is defeated!"
                 self.player.location.beings.remove(proposed_enemy)
+                self.player.location.items.extend(proposed_enemy.inventory)
+                # alternatively:
+                # for current_item in proposed_enemy.inventory:
+                #     self.player.location.items.append(current_item)
                 # update view
                 self.update_view()
             
@@ -174,12 +187,14 @@ class Rpg:
                     result += f"\t{item.name}\n"
 
         else:
+            # look at specific object with name
             # if we get here we have 2 or more strings in the input list
             # order of target of look: beings, items, then exits
             current_location = self.player.location
             proposed_object_name = proposed_objects[1]
             category_spacer = "\n" + 30*"-" + "\n"
             
+            # beings
             if any(proposed_object_name == being.name for being in current_location.beings):
                 result += f"beings named {proposed_object_name}:"
                 result += category_spacer
@@ -190,6 +205,7 @@ class Rpg:
             else:
                 result += f"No beings named {proposed_object_name}\n\n"
             
+            #items in room
             if any(proposed_object_name == item.name for item in current_location.items):
                 result += f"items named {proposed_object_name}:"
                 result += category_spacer
@@ -199,7 +215,19 @@ class Rpg:
                 result += category_spacer
             else:
                 result += f"No items named {proposed_object_name}\n\n"
+            
+            #items in player inventory
+            if any(proposed_object_name == item.name for item in self.player.inventory):
+                result += f"inventory items named {proposed_object_name}:"
+                result += category_spacer
+                for item in self.player.inventory:
+                    if proposed_object_name == item.name:
+                        result += f"{item.__str__()}"
+                result += category_spacer
+            else:
+                result += f"No inventroy items named {proposed_object_name}\n\n"
 
+            #exits in room
             if proposed_object_name in current_location.exits:
                 result += f"Exit {proposed_object_name} leads to:\n"
                 result += category_spacer
@@ -229,7 +257,7 @@ class Rpg:
 
             # add item to player inventory
             # fix this to be a list instead of a dictionary...
-            self.player.inventory[proposed_item_name] = proposed_item
+            self.player.inventory.append(proposed_item)
 
             result = f"got {proposed_item_name}!"
         else:

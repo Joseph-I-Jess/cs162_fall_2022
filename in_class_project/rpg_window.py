@@ -125,7 +125,7 @@ class Rpg_window:
             current_map_cell.graphical_id = self.map.create_rectangle(current_map_cell_x0, current_map_cell_y0, current_map_cell_x1, current_map_cell_y1, fill=self.map_cell_color)
 
             # draw beings with a color based on whether it is a player or an enemy
-            for being in current_map_cell.beings:
+            for current_being in current_map_cell.beings:
                 # player has no x offset or y offset
                 being_x0 = current_map_cell_x0
                 being_y0 = current_map_cell_y0
@@ -133,12 +133,12 @@ class Rpg_window:
                 being_y1 = current_map_cell_y0 + self.map_cell_size / 2
                 # assume player color, change if needed
                 map_being_color = self.map_player_color
-                if isinstance(being, enemy.Enemy):
+                if isinstance(current_being, enemy.Enemy):
                     # enemy has x offset but no y offset
                     being_x0 += self.map_cell_size / 2
                     being_x1 += self.map_cell_size / 2
                     map_being_color = self.map_enemy_color
-                being.graphical_id = self.map.create_rectangle(being_x0, being_y0, being_x1, being_y1, fill=map_being_color)
+                current_being.graphical_id = self.map.create_rectangle(being_x0, being_y0, being_x1, being_y1, fill=map_being_color)
 
             # draw items
             for current_item in current_map_cell.items:
@@ -150,6 +150,7 @@ class Rpg_window:
                 current_item.graphical_id = self.map.create_rectangle(item_x0, item_y0, item_x1, item_y1, fill=self.map_item_color)
 
             # draw exits
+            
 
 
     # add back in later to make redrawing the map faster and less expensive?!
