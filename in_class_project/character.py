@@ -7,18 +7,24 @@
 
 class Character:
     '''Player character class.'''
-    def __init__(self):
-        self.graphical_id = None # to be used if this object is drawn on a graphical space
-        self.location = None
-        self.name = "hero"
-        self.level = 1
+    
+    DEFAULT_ATTACK = 10
+    DEFAULT_DEFENSE = 10
+    DEFAULT_HEALTH = 10
+
+    # add type hints!?
+    def __init__(self, graphical_id=None, location=None, name="hero", level=1, attack=DEFAULT_ATTACK, defense=DEFAULT_DEFENSE, health=DEFAULT_HEALTH, inventory={}, equipment={}):
+        self.graphical_id = graphical_id # to be used if this object is drawn on a graphical space
+        self.location = location
+        self.name = name
+        self.level = level
         
-        self.attack = 10 # damage on hit
-        self.defense = 10 # damage reduction when hit
-        self.health = 10
+        self.attack = attack # damage on hit
+        self.defense = defense # damage reduction when hit
+        self.health = health
         
-        self.inventory = {} # all items the character carries
-        self.equipment = {} # items that are equipped on the character
+        self.inventory = inventory # all items the character carries
+        self.equipment = equipment # items that are equipped on the character
 
     def set_location(self, new_location=None):
         self.location = new_location

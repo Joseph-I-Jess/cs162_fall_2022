@@ -49,6 +49,8 @@ class Rpg:
         self.command_interpreter.set_command("equip", self.player.equip, "equip <equipment name>", ["equip", "e"])
         self.command_interpreter.set_command("unequip", self.player.unequip, "unequip <equipment name>", ["unequip", "u"])
 
+        self.command_interpreter.set_command("save", self.save, "save", ["save"])
+
         self.view = None
 
     def set_view(self, proposed_view):
@@ -188,4 +190,6 @@ class Rpg:
             result = f"No item named {proposed_item_name} in this room"
 
         return result
+
+    
 

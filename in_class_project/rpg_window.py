@@ -10,6 +10,9 @@ import in_class_project.enemy as enemy
         .Add map_cells to the Map part of the Rpg_window
         .Add Item class, add item behavior to character, enemy, and map_cell
         Add item graphically, add item to enemy to drop when defeated, updated all related data
+
+        Add images instead of colored rectangles!?
+            Add transparency?
 """
 
 class Rpg_window:
