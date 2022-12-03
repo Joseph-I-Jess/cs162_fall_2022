@@ -7,15 +7,15 @@
 """
 
 class Map_cell:
-    def __init__(self, name: str="no name given", description: str="no description given", beings: list=[], items:list=[], x: int=0, y: int=0, exits: dict={}):
+    def __init__(self, name: str="no name given", description: str="no description given", beings: list=None, items:list=None, x: int=0, y: int=0, exits: dict=None):
         self.graphical_id = None # to be used if this object is drawn on a graphical space
         self.name = name
         self.description = description
-        self.beings = beings
-        self.items = items
+        self.beings = beings if beings is not None else list()
+        self.items = items if items is not None else list()
         self.x = x
         self.y = y
-        self.exits = exits
+        self.exits = exits if exits is not None else dict()
 
     def add_exit(self, proposed_name: str, proposed_map_cell):
         """Add new exit to this map cell with proposed_name mapping to proposed_map_cell if not already in use, otherwise return an error message."""

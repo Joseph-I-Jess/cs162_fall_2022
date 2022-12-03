@@ -9,13 +9,13 @@ class Being(game_object.Game_object):
     DEFAULT_DEFENSE = 10
     DEFAULT_HEALTH = 10
 
-    def __init__(self, graphical_id=None, graphics_file=None, location=None, name="being", level=1, attack=DEFAULT_ATTACK, defense=DEFAULT_DEFENSE, health=DEFAULT_HEALTH, inventory=[], equipment={}):
+    def __init__(self, graphical_id=None, graphics_file=None, location=None, name="being", level=1, attack=DEFAULT_ATTACK, defense=DEFAULT_DEFENSE, health=DEFAULT_HEALTH, inventory=None, equipment=None):
         super().__init__(graphical_id, graphics_file, location, name, attack, defense, health)
         self.level = level
         
-        self.inventory = inventory # all items the character carries
+        self.inventory = inventory if inventory is not None else list() # all items the character carries
         # input validation check on equipped items in equipment dictionary
-        self.equipment = equipment # items that are equipped on the character by the item equipment slot as the key and the item as the value
+        self.equipment = equipment if equipment is not None else dict() # items that are equipped on the character by the item equipment slot as the key and the item as the value
         self.equipment_slots = {}# equipment_slot to item equipped
         # initialize equipment slots with one per slot type
         for slot_name in game_object.Game_object.EQUIPMENT_SLOTS:

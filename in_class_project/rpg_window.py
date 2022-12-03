@@ -9,7 +9,10 @@ import in_class_project.enemy as enemy
         .Move get_input to its own command interpreter class...
         .Add map_cells to the Map part of the Rpg_window
         .Add Item class, add item behavior to character, enemy, and map_cell
-        Add item graphically, add item to enemy to drop when defeated, updated all related data
+        .Add item graphically, add item to enemy to drop when defeated, updated all related data
+
+        Standardize the cell position and size formula... make it a method?
+        Add map cell gap between each graphical map cell?
 
         xAdd images instead of colored rectangles!?
             Add transparency?
@@ -110,7 +113,7 @@ class Rpg_window:
     def set_model(self, proposed_model):
         self.model = proposed_model
 
-    def set_map_data(self, new_map_data=None) -> None:
+    def set_map_data(self, new_map_data: list=None) -> None:
         '''Clear and redraw map, or just clear it if new map data is none.'''
         self.map.delete("all")
 
@@ -118,10 +121,10 @@ class Rpg_window:
             # fetch x, y, coordinates to draw room
             # where should my gap be?  Fix to have gaps included!
             # should we change this to be a line between rooms that connect?
-            current_map_cell_x0 = (current_map_cell.x * self.map_cell_size) + self.map_cell_gap
-            current_map_cell_y0 = (current_map_cell.y * self.map_cell_size) + self.map_cell_gap
-            current_map_cell_x1 = (current_map_cell.x * self.map_cell_size) + self.map_cell_size + self.map_cell_gap
-            current_map_cell_y1 = (current_map_cell.y * self.map_cell_size) + self.map_cell_size + self.map_cell_gap
+            current_map_cell_x0 = (current_map_cell.x * self.map_cell_size)
+            current_map_cell_y0 = (current_map_cell.y * self.map_cell_size)
+            current_map_cell_x1 = (current_map_cell.x * self.map_cell_size) + self.map_cell_size
+            current_map_cell_y1 = (current_map_cell.y * self.map_cell_size) + self.map_cell_size
             current_map_cell.graphical_id = self.map.create_rectangle(current_map_cell_x0, current_map_cell_y0, current_map_cell_x1, current_map_cell_y1, fill=self.map_cell_color)
 
             # draw beings with a color based on whether it is a player or an enemy
@@ -149,9 +152,19 @@ class Rpg_window:
                 item_y1 = current_map_cell_y0 + self.map_cell_size
                 current_item.graphical_id = self.map.create_rectangle(item_x0, item_y0, item_x1, item_y1, fill=self.map_item_color)
 
-            # draw exits
-            
-
+        # draw exits
+        # for each current map cell in the map
+        for current_map_cell in new_map_data:
+            print(f"current_map_cell: {current_map_cell}")
+            # for each exit destination in the current map cell
+            for current_exit_destination_map_cell in current_map_cell.exits.values():
+                print(f"current_exit_destination_map_cell: {current_exit_destination_map_cell}")
+                # draw an arrow from current map cell bottom right quadrant center to destination map cell bottom right quadrant center.
+                x0 = (current_map_cell.x * self.map_cell_size) + self.map_cell_size * 0.75
+                y0 = (current_map_cell.y * self.map_cell_size) + self.map_cell_size * 0.75
+                x1 = (current_exit_destination_map_cell.x * self.map_cell_size) + self.map_cell_size * 0.75
+                y1 = (current_exit_destination_map_cell.y * self.map_cell_size) + self.map_cell_size * 0.75
+                self.map.create_line(x0, y0, x1, y1, fill=self.map_cell_exit_color, arrow=tk.LAST)
 
     # add back in later to make redrawing the map faster and less expensive?!
     # def remove_map_data_item(self, old_id):

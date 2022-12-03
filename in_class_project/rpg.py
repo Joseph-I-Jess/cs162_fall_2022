@@ -39,9 +39,24 @@ class Rpg:
         self.map_cells.append(first_map_cell)
 
         dagger = item.Item(name="dagger", attack=3, defense=1, slot="weapon")
-        second_map_cell = map_cell.Map_cell(name="room to the south", description="North of the starting room of our game...", items=[dagger], x=0, y=1, exits={"north":first_map_cell})
+        second_map_cell = map_cell.Map_cell(name="room to the south", description="south of the starting room of our game...", items=[dagger], x=0, y=1)
         first_map_cell.add_exit("south", second_map_cell)
+        second_map_cell.add_exit("north", first_map_cell)
         self.map_cells.append(second_map_cell)
+
+        map_cell_1_0 = map_cell.Map_cell(name="east of starting room", description="east of the starting room of our game...", x=1, y=0)
+        first_map_cell.add_exit("east", map_cell_1_0)
+        self.map_cells.append(map_cell_1_0)
+
+        map_cell_1_1 = map_cell.Map_cell(name="east of second map cell", description="east of the second room of our game...", x=1, y=1)
+        second_map_cell.add_exit("east", map_cell_1_1)
+        self.map_cells.append(map_cell_1_1)
+
+        map_cell_3_4 = map_cell.Map_cell(name="out in the open", description="south-east of the rest of the map", x=3, y=4)
+        map_cell_1_0.add_exit("up-elevator", map_cell_3_4)
+        map_cell_1_1.add_exit("up-elevator", map_cell_3_4)
+        map_cell_3_4.add_exit("drop-down", first_map_cell)
+        self.map_cells.append(map_cell_3_4)
 
         # set players starting position
         self.player.set_location(first_map_cell)
@@ -169,7 +184,7 @@ class Rpg:
             result += f"\t{current_room.description}\n"
             result += "exits:\n"
             if len(current_room.exits) <= 0:
-                result += "\tNo obvious exits!"
+                result += "\tNo obvious exits!\n"
             else:
                 for exit_direction in current_room.exits.keys():
                     result += f"\t{exit_direction}\n"
